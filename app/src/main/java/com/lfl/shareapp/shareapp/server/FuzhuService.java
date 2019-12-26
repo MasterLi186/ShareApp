@@ -22,6 +22,8 @@ public class FuzhuService extends AccessibilityService {
     private static android.os.Handler handler = new android.os.Handler(Looper.getMainLooper());
     private int width;
     private int height;
+    private String gallery = "gallery";
+    private String weChat = "com.tencent.mm";
 
 
     @Override
@@ -41,7 +43,7 @@ public class FuzhuService extends AccessibilityService {
         if (event.getPackageName() == null) return;
         String s = event.getPackageName().toString();
         if (s.contains("systemui")) return;
-        Log.d(TAG, "getPackageName: " + s);
+        //Log.d(TAG, "getPackageName: " + s);
         if (s.contains("launcher")) count = 0;
         /*
         免root自动安装.
@@ -58,10 +60,10 @@ public class FuzhuService extends AccessibilityService {
         }
 
         /*
-        滑动桌面
+        滑动界面
          */
         if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED
-                && s.contains("gallery")){
+                && s.contains(weChat)){
             rootInActiveWindow = getRootInActiveWindow();
             if (rootInActiveWindow == null) return;
             Log.d(TAG, "count = " + count);
@@ -82,30 +84,44 @@ public class FuzhuService extends AccessibilityService {
             mPath.lineTo(400,2200);
             GestureDescription.StrokeDescription sd1 = new GestureDescription.StrokeDescription(mPath, 0, 100);
             Path mPath2 = new Path();
-            mPath2.moveTo(width/2,width/2 + 400);
-            mPath2.lineTo(width/2,width/2 - 400);
-            GestureDescription.StrokeDescription sd2 ;//= new GestureDescription.StrokeDescription(mPath2, 0, 300);
+            mPath2.moveTo(width/2,width);
+            mPath2.lineTo(width/2,0);
+            performScrollBackward();
+//            GestureDescription.StrokeDescription sd2 ;//= new GestureDescription.StrokeDescription(mPath2, 0, 300);
             try {
-                for (int i = 0; i < 10; i++) {
-                    Log.d(TAG, "i = " + i);
-                    sd2 = new GestureDescription.StrokeDescription(mPath2, 10 * i, 200);
-                    moveGesture(sd2);
-                    SystemClock.sleep(400 * i);
-                }
-                Log.d(TAG, "end: ");
+//                for (int i = 0; i < 10; i++) {
+//                    Log.d(TAG, "i = " + i);
+//                    sd2 = new GestureDescription.StrokeDescription(mPath2, 1, 100,true);
+//                    //moveGesture(sd2);
+//                    //SystemClock.sleep(200);
+//                }
+//                Log.d(TAG, "end: ");
             } catch (Exception e) {
                 Log.e(TAG, "onAccessibilityEvent: " + e.getMessage());
                 e.printStackTrace();
             }
         }
     }
-
+    /**
+     * 模拟下滑操作
+     */
+    public void performScrollBackward() {
+        try {
+            Thread.sleep(500);
+            performGlobalAction(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD);
+            Log.d(TAG, "performScrollBackward: ");
+        } catch (Exception e) {
+            Log.d(TAG, "performScrollBackward: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
     /*
     滑动
      */
     private void moveGesture(GestureDescription.StrokeDescription sd) {
+        Log.d(TAG, "moveGesture: ");
         mService.dispatchGesture(new GestureDescription.Builder().addStroke(sd).build(),
-                null,null);
+                null, null);
     }
 
     private static int count = 0;
