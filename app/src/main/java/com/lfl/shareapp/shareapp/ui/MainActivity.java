@@ -23,7 +23,6 @@ public class MainActivity extends AppCompatActivity {
          if (!FuzhuService.isReady()) {
                 try {
                     MainActivity.this.startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS));
-    //                    getResources().getXml(R.xml.fuzhu);
                 } catch (Exception e) {
                     MainActivity.this.startActivity(new Intent(Settings.ACTION_SETTINGS));
                     e.printStackTrace();
