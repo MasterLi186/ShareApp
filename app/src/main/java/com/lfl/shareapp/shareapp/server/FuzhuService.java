@@ -24,6 +24,8 @@ public class FuzhuService extends AccessibilityService {
     private int height;
     private String gallery = "gallery";
     private String weChat = "com.tencent.mm";
+    private String settings = "com.android.settings";
+    private String contacts = "android.contacts";
 
 
     @Override
@@ -36,6 +38,7 @@ public class FuzhuService extends AccessibilityService {
         height = wm.getDefaultDisplay().getHeight();
         Log.d(TAG, "width = " + width + "  ,  height = " + height);
         mService = this;
+        performGlobalAction(GLOBAL_ACTION_HOME);
     }
 
     @Override
@@ -63,12 +66,13 @@ public class FuzhuService extends AccessibilityService {
         滑动界面
          */
         if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED
-                && s.contains(weChat)){
+                && s.contains(contacts)){
             rootInActiveWindow = getRootInActiveWindow();
             if (rootInActiveWindow == null) return;
             Log.d(TAG, "count = " + count);
             if(count ++ == 1){
                 new MoveThread().run();
+//                checkListView();
             }
 
 
@@ -84,17 +88,18 @@ public class FuzhuService extends AccessibilityService {
             mPath.lineTo(400,2200);
             GestureDescription.StrokeDescription sd1 = new GestureDescription.StrokeDescription(mPath, 0, 100);
             Path mPath2 = new Path();
-            mPath2.moveTo(width/2,width);
-            mPath2.lineTo(width/2,0);
+            mPath2.moveTo(width/2,height/2 +200);
+            mPath2.lineTo(width/2,height/2 -200);
             performScrollBackward();
-//            GestureDescription.StrokeDescription sd2 ;//= new GestureDescription.StrokeDescription(mPath2, 0, 300);
+            GestureDescription.StrokeDescription sd2 ;//= new GestureDescription.StrokeDescription(mPath2, 0, 300);
             try {
-//                for (int i = 0; i < 10; i++) {
-//                    Log.d(TAG, "i = " + i);
-//                    sd2 = new GestureDescription.StrokeDescription(mPath2, 1, 100,true);
-//                    //moveGesture(sd2);
-//                    //SystemClock.sleep(200);
-//                }
+                for (int i = 0; i < 30; i++) {
+                    Log.d(TAG, "i = " + i);
+                    sd2 = new GestureDescription.StrokeDescription(mPath2, 0, 100);
+                    moveGesture(sd2);
+//                    checkListView();
+                    SystemClock.sleep(110);
+                }
 //                Log.d(TAG, "end: ");
             } catch (Exception e) {
                 Log.e(TAG, "onAccessibilityEvent: " + e.getMessage());
@@ -141,7 +146,49 @@ public class FuzhuService extends AccessibilityService {
                 }
             }
         }
+    }
 
+    /*/
+    检查listview
+    */
+    public void checkListView(){
+        AccessibilityNodeInfo info = getRootInActiveWindow();
+        if (info== null) return;
+        try {
+            AccessibilityNodeInfo accessibilityNodeInfo = recycleFindListView(info);
+            if (accessibilityNodeInfo != null)accessibilityNodeInfo.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static final String listViewClassName = "android.widget.ListView";
+    private static final String recyclerView = "android.support.v7.widget.RecyclerView";
+    /**根据固定的类名循环查找到listView,查找到目标listView后即退出循环
+     * @param node
+     * @return
+     */
+    public AccessibilityNodeInfo recycleFindListView(AccessibilityNodeInfo node) {
+        if (node.getChildCount() == 0) {
+            return null;
+        } else {//listview下面必定有子元素，所以放在此时判断
+            for (int i = 0; i < node.getChildCount(); i++) {
+                Log.d(TAG, "recycleFindListView: " + node.getClassName());
+                if (recyclerView.equals(node.getClassName())) {
+                    Log.d(TAG, "recyclerView。。。");
+//                    node.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
+                    return node;
+                } else if (node.getChild(i) != null) {
+                    AccessibilityNodeInfo result = recycleFindListView(node.getChild(i));
+                    if (result == null) {
+                        continue;
+                    } else {
+                        return result;
+                    }
+                }
+            }
+        }
+        return null;
     }
     @Override
     public void onInterrupt() {
