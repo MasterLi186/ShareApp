@@ -26,6 +26,7 @@ public class FuzhuService extends AccessibilityService {
     private String weChat = "com.tencent.mm";
     private String settings = "com.android.settings";
     private String contacts = "android.contacts";
+    private String launcher = "android.app.launcher";
 
 
     @Override
@@ -65,16 +66,21 @@ public class FuzhuService extends AccessibilityService {
         /*
         滑动界面
          */
-        if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED
-                && s.contains(contacts)){
+        if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED){
             rootInActiveWindow = getRootInActiveWindow();
             if (rootInActiveWindow == null) return;
             Log.d(TAG, "count = " + count);
-            if(count ++ == 1){
-                new MoveThread().run();
+            if (s.contains(contacts)){
+                if(count ++ == 1){
+                    new LauncherMove().run();
 //                checkListView();
+                }
             }
-
+            if (s.contains(launcher)){
+                if(count ++ == 1){
+                    new LauncherMove().run();
+                }
+            }
 
         }
     }
@@ -88,17 +94,47 @@ public class FuzhuService extends AccessibilityService {
             mPath.lineTo(400,2200);
             GestureDescription.StrokeDescription sd1 = new GestureDescription.StrokeDescription(mPath, 0, 100);
             Path mPath2 = new Path();
-            mPath2.moveTo(width/2,height/2 +200);
-            mPath2.lineTo(width/2,height/2 -200);
+            mPath2.moveTo(width/2,height/2 +40);
+            mPath2.lineTo(width/2,height/2 -40);
             performScrollBackward();
             GestureDescription.StrokeDescription sd2 ;//= new GestureDescription.StrokeDescription(mPath2, 0, 300);
             try {
-                for (int i = 0; i < 30; i++) {
+                for (int i = 0; i < 150; i++) {
                     Log.d(TAG, "i = " + i);
-                    sd2 = new GestureDescription.StrokeDescription(mPath2, 0, 100);
+                    sd2 = new GestureDescription.StrokeDescription(mPath2, 0, 10);
                     moveGesture(sd2);
 //                    checkListView();
-                    SystemClock.sleep(110);
+                    SystemClock.sleep(15);
+                }
+//                Log.d(TAG, "end: ");
+            } catch (Exception e) {
+                Log.e(TAG, "onAccessibilityEvent: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+    }
+
+    class LauncherMove implements Runnable{
+
+        @Override
+        public void run() {
+            Log.d(TAG, "run: ");
+            Path mPath = new Path();
+            mPath.moveTo(1000, 2200);
+            mPath.lineTo(400,2200);
+            GestureDescription.StrokeDescription sd1 = new GestureDescription.StrokeDescription(mPath, 0, 100);
+            Path mPath2 = new Path();
+            mPath2.moveTo(width/2,height/2 +40);
+            mPath2.lineTo(width/2,height/2 -40);
+            performScrollBackward();
+            GestureDescription.StrokeDescription sd2 ;//= new GestureDescription.StrokeDescription(mPath2, 0, 300);
+            try {
+                for (int i = 0; i < 150; i++) {
+                    Log.d(TAG, "i = " + i);
+                    sd2 = new GestureDescription.StrokeDescription(mPath2, 0, 10);
+                    moveGesture(sd2);
+//                    checkListView();
+                    SystemClock.sleep(15);
                 }
 //                Log.d(TAG, "end: ");
             } catch (Exception e) {
