@@ -76,7 +76,7 @@ public class FuzhuService extends AccessibilityService {
 //                checkListView();
                 }
             }
-            if (s.contains(launcher)){
+            if (s.contains(weChat)){
                 if(count ++ == 1){
                     new LauncherMove().run();
                 }
@@ -120,21 +120,16 @@ public class FuzhuService extends AccessibilityService {
         public void run() {
             Log.d(TAG, "run: ");
             Path mPath = new Path();
-            mPath.moveTo(1000, 2200);
-            mPath.lineTo(400,2200);
-            GestureDescription.StrokeDescription sd1 = new GestureDescription.StrokeDescription(mPath, 0, 100);
-            Path mPath2 = new Path();
-            mPath2.moveTo(width/2,height/2 +40);
-            mPath2.lineTo(width/2,height/2 -40);
-            performScrollBackward();
-            GestureDescription.StrokeDescription sd2 ;//= new GestureDescription.StrokeDescription(mPath2, 0, 300);
+            mPath.moveTo(width /2 +500, height /2);
+            mPath.lineTo(width /2 -500, height /2);
+            GestureDescription.StrokeDescription sd2 ;
             try {
-                for (int i = 0; i < 150; i++) {
+                for (int i = 0; i < 2; i++) {
                     Log.d(TAG, "i = " + i);
-                    sd2 = new GestureDescription.StrokeDescription(mPath2, 0, 10);
+                    sd2 = new GestureDescription.StrokeDescription(mPath, 0, 200);
                     moveGesture(sd2);
 //                    checkListView();
-                    SystemClock.sleep(15);
+                    SystemClock.sleep(300);
                 }
 //                Log.d(TAG, "end: ");
             } catch (Exception e) {
