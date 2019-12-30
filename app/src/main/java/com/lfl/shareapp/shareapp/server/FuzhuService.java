@@ -11,8 +11,8 @@ import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
-import com.lfl.shareapp.shareapp.view.ViewManager;
-
+import java.io.DataOutputStream;
+import java.io.OutputStream;
 import java.util.List;
 
 public class FuzhuService extends AccessibilityService {
@@ -26,8 +26,7 @@ public class FuzhuService extends AccessibilityService {
     private String weChat = "com.tencent.mm";
     private String settings = "com.android.settings";
     private String contacts = "android.contacts";
-    private String launcher = "launcher";
-    private String xiaoMiLauncher = "miui.home";
+    private String launcher = "android.app.launcher";
 
 
     @Override
@@ -40,29 +39,27 @@ public class FuzhuService extends AccessibilityService {
         height = wm.getDefaultDisplay().getHeight();
         Log.d(TAG, "width = " + width + "  ,  height = " + height);
         mService = this;
-        //performGlobalAction(GLOBAL_ACTION_HOME);
+        performGlobalAction(GLOBAL_ACTION_HOME);
     }
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
         if (event.getPackageName() == null) return;
         String s = event.getPackageName().toString();
-        Log.d(TAG, "onAccessibilityEvent: " + s);
         if (s.contains("systemui")) return;
         //Log.d(TAG, "getPackageName: " + s);
-//        if (s.contains("launcher")) count = 0;
+        if (s.contains("launcher")) count = 0;
         /*
         免root自动安装.
          */
         if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED
-            && s.contains(launcher)){
+            && s.contains("packageinstaller")){
             rootInActiveWindow = getRootInActiveWindow();
             if (rootInActiveWindow == null) return;
 //            clickButton("总是允许");
-//            clickButton("安装");
-//            clickButton("确认");
-//            clickButton("完成");
-//            clickButton("微信");
+            clickButton("安装");
+            clickButton("确认");
+            clickButton("完成");
 
         }
 
@@ -79,7 +76,7 @@ public class FuzhuService extends AccessibilityService {
 //                checkListView();
                 }
             }
-            if (s.contains(launcher) || s.contains(xiaoMiLauncher)){
+            if (s.contains(weChat)){
                 if(count ++ == 1){
                     new LauncherMove().run();
                 }
@@ -123,21 +120,16 @@ public class FuzhuService extends AccessibilityService {
         public void run() {
             Log.d(TAG, "run: ");
             Path mPath = new Path();
-            mPath.moveTo(1000, 2200);
-            mPath.lineTo(400,2200);
-            GestureDescription.StrokeDescription sd1 = new GestureDescription.StrokeDescription(mPath, 0, 100);
-            Path mPath2 = new Path();
-            mPath2.moveTo(width/4 ,height/2);
-            mPath2.lineTo(width/4 * 3 ,height/2);
-            performScrollBackward();
-            GestureDescription.StrokeDescription sd2 ;//= new GestureDescription.StrokeDescription(mPath2, 0, 300);
+            mPath.moveTo(width /2 +500, height /2);
+            mPath.lineTo(width /2 -500, height /2);
+            GestureDescription.StrokeDescription sd2 ;
             try {
-                for (int i = 0; i < 5; i++) {
+                for (int i = 0; i < 2; i++) {
                     Log.d(TAG, "i = " + i);
-                    sd2 = new GestureDescription.StrokeDescription(mPath2, 0, 200);
+                    sd2 = new GestureDescription.StrokeDescription(mPath, 0, 200);
                     moveGesture(sd2);
 //                    checkListView();
-                    SystemClock.sleep(500);
+                    SystemClock.sleep(300);
                 }
 //                Log.d(TAG, "end: ");
             } catch (Exception e) {
@@ -229,8 +221,6 @@ public class FuzhuService extends AccessibilityService {
         }
         return null;
     }
-
-
     @Override
     public void onInterrupt() {
         Log.d(TAG, "onInterrupt: ");
