@@ -11,8 +11,8 @@ import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
-import java.io.DataOutputStream;
-import java.io.OutputStream;
+import com.lfl.shareapp.shareapp.view.ViewManager;
+
 import java.util.List;
 
 public class FuzhuService extends AccessibilityService {
@@ -26,7 +26,8 @@ public class FuzhuService extends AccessibilityService {
     private String weChat = "com.tencent.mm";
     private String settings = "com.android.settings";
     private String contacts = "android.contacts";
-    private String launcher = "android.app.launcher";
+    private String launcher = "launcher";
+    private String xiaoMiLauncher = "miui.home";
 
 
     @Override
@@ -39,27 +40,29 @@ public class FuzhuService extends AccessibilityService {
         height = wm.getDefaultDisplay().getHeight();
         Log.d(TAG, "width = " + width + "  ,  height = " + height);
         mService = this;
-        performGlobalAction(GLOBAL_ACTION_HOME);
+        //performGlobalAction(GLOBAL_ACTION_HOME);
     }
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
         if (event.getPackageName() == null) return;
         String s = event.getPackageName().toString();
+        Log.d(TAG, "onAccessibilityEvent: " + s);
         if (s.contains("systemui")) return;
         //Log.d(TAG, "getPackageName: " + s);
-        if (s.contains("launcher")) count = 0;
+//        if (s.contains("launcher")) count = 0;
         /*
         免root自动安装.
          */
         if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED
-            && s.contains("packageinstaller")){
+            && s.contains(launcher)){
             rootInActiveWindow = getRootInActiveWindow();
             if (rootInActiveWindow == null) return;
 //            clickButton("总是允许");
-            clickButton("安装");
-            clickButton("确认");
-            clickButton("完成");
+//            clickButton("安装");
+//            clickButton("确认");
+//            clickButton("完成");
+//            clickButton("微信");
 
         }
 
@@ -76,7 +79,7 @@ public class FuzhuService extends AccessibilityService {
 //                checkListView();
                 }
             }
-            if (s.contains(launcher)){
+            if (s.contains(launcher) || s.contains(xiaoMiLauncher)){
                 if(count ++ == 1){
                     new LauncherMove().run();
                 }
@@ -124,17 +127,17 @@ public class FuzhuService extends AccessibilityService {
             mPath.lineTo(400,2200);
             GestureDescription.StrokeDescription sd1 = new GestureDescription.StrokeDescription(mPath, 0, 100);
             Path mPath2 = new Path();
-            mPath2.moveTo(width/2,height/2 +40);
-            mPath2.lineTo(width/2,height/2 -40);
+            mPath2.moveTo(width/4 ,height/2);
+            mPath2.lineTo(width/4 * 3 ,height/2);
             performScrollBackward();
             GestureDescription.StrokeDescription sd2 ;//= new GestureDescription.StrokeDescription(mPath2, 0, 300);
             try {
-                for (int i = 0; i < 150; i++) {
+                for (int i = 0; i < 5; i++) {
                     Log.d(TAG, "i = " + i);
-                    sd2 = new GestureDescription.StrokeDescription(mPath2, 0, 10);
+                    sd2 = new GestureDescription.StrokeDescription(mPath2, 0, 200);
                     moveGesture(sd2);
 //                    checkListView();
-                    SystemClock.sleep(15);
+                    SystemClock.sleep(500);
                 }
 //                Log.d(TAG, "end: ");
             } catch (Exception e) {
@@ -226,6 +229,8 @@ public class FuzhuService extends AccessibilityService {
         }
         return null;
     }
+
+
     @Override
     public void onInterrupt() {
         Log.d(TAG, "onInterrupt: ");
