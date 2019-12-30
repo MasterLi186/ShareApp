@@ -11,8 +11,6 @@ import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
-import java.io.DataOutputStream;
-import java.io.OutputStream;
 import java.util.List;
 
 public class FuzhuService extends AccessibilityService {
@@ -78,7 +76,7 @@ public class FuzhuService extends AccessibilityService {
             }
             if (s.contains(weChat)){
                 if(count ++ == 1){
-                    new LauncherMove().run();
+                    //new LauncherMove().run();
                 }
             }
 

@@ -1,27 +1,19 @@
 package com.lfl.shareapp.shareapp.ui;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.graphics.PixelFormat;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.WindowManager;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.lfl.shareapp.R;
 import com.lfl.shareapp.shareapp.server.FloatService;
 import com.lfl.shareapp.shareapp.server.FuzhuService;
-import com.lfl.shareapp.shareapp.view.ViewManager;
-
-import org.greenrobot.eventbus.EventBus;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";

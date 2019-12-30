@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+    <LinearLayout
+        android:id="@+id/ll"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv1"
+            android:text="@string/app_name"
+            android:textSize="20dp"
+            ></TextView>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv2"
+            android:text="@string/fuzhu"
+            android:textSize="15dp"
+            android:paddingTop="5dp"
+            android:layout_below="@id/tv1"
+            ></TextView>
+    </LinearLayout>
+
+    <ImageView
+        android:paddingRight="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/iv"
+        android:background="@mipmap/ic_launcher"
+        android:layout_toRightOf="@id/ll"
+        ></ImageView>
+
+
+
+</RelativeLayout>
