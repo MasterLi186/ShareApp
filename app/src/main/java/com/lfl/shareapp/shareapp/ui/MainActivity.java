@@ -3,29 +3,27 @@ package com.lfl.shareapp.shareapp.ui;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.util.Log;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.lfl.shareapp.R;
 import com.lfl.shareapp.shareapp.server.FloatService;
 import com.lfl.shareapp.shareapp.server.FuzhuService;
 
-public class MainActivity extends AppCompatActivity {
+import org.greenrobot.eventbus.EventBus;
+
+import ssui.ui.app.SsActivity;
+
+public class MainActivity extends SsActivity {
     private static final String TAG = "MainActivity";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //EventBus.getDefault().register(MainActivity.this);
+//        EventBus.getDefault().register(MainActivity.this);
 
-        Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
-        intent.setData(Uri.parse("package:" + this.getPackageName()));
-        startActivity(intent);
 
         if (!FuzhuService.isReady() || !FloatService.isReady()) {
                 try {
@@ -58,6 +56,11 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "onStart: ");
     }
 
+//    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+//    public void onMessageEvent(ShareEvent event) {
+//        Log.d(TAG, "onMessageEvent: " + event.updateView);
+//        //ViewManager.getInstance(MainActivity.this).setShowTxt("778899 i = " + event.updateView);
+//    }
     @Override
     protected void onResume() {
         super.onResume();
@@ -68,5 +71,11 @@ public class MainActivity extends AppCompatActivity {
         super.onStop();
         Log.d(TAG, "onStop: ");
     }
-    
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
 }

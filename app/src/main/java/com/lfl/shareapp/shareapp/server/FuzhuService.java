@@ -71,7 +71,7 @@ public class FuzhuService extends AccessibilityService {
             Log.d(TAG, "count = " + count);
             if (s.contains(launcher) || s.contains(xiaomi_launcher)){
                 if(count ++ == 1){
-                    new LauncherMove().run();
+                    //new LauncherMove().run();
 //                checkListView();
                 }
             }

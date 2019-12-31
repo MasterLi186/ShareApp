@@ -11,21 +11,19 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.lfl.shareapp.R;
 
 public class ViewManager {
     private static final String TAG = "ViewManager";
-    WindowManager windowManager;
+    //WindowManager windowManager;
     public static ViewManager manager;
     Context context;
-    private WindowManager.LayoutParams floatBallParams;
+    private static WindowManager.LayoutParams floatBallParams;
 
     private static WindowManager mWindowManager = null;
-    private static WindowManager.LayoutParams params;
+//    private static WindowManager.LayoutParams params;
     public static Boolean isShown = false;
     private static View mView = null;
 
@@ -42,7 +40,7 @@ public class ViewManager {
 
     public void showFloatBall() {
         mView = setUpView(context,"showFloatBall");
-        windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        mWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         if (floatBallParams == null) {
             floatBallParams = new WindowManager.LayoutParams();
             floatBallParams.width = LinearLayout.LayoutParams.WRAP_CONTENT;
@@ -53,12 +51,12 @@ public class ViewManager {
                     | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL;
             floatBallParams.format = PixelFormat.RGBA_8888;
         }
-        windowManager.addView(mView, floatBallParams);
+        mWindowManager.addView(mView, floatBallParams);
 
     }
 
     public int getScreenWidth() {
-        return windowManager.getDefaultDisplay().getWidth();
+        return mWindowManager.getDefaultDisplay().getWidth();
     }
 
 
@@ -76,11 +74,11 @@ public class ViewManager {
      */
     public static void setTouchable(boolean isTouchable) {
         if (isTouchable) {
-            params.flags = canTouchFlags;
+            floatBallParams.flags = canTouchFlags;
         } else {
-            params.flags = notTouchFlags;
+            floatBallParams.flags = notTouchFlags;
         }
-        mWindowManager.updateViewLayout(mView, params);
+        mWindowManager.updateViewLayout(mView, floatBallParams);
 
     }
 
@@ -99,12 +97,12 @@ public class ViewManager {
         try {
             TextView showTv = (TextView) mView.findViewById(R.id.tv1);
             showTv.setText(txt);
-            mWindowManager.updateViewLayout(mView, params);
+            mWindowManager.updateViewLayout(mView, floatBallParams);
         } catch (Exception e) {
             Log.d(TAG, "setShowTxt: 更新悬浮框错误");
             e.printStackTrace();
             if (e.getMessage().contains("not attached to window manager")) {
-                mWindowManager.addView(mView, params);
+                mWindowManager.addView(mView, floatBallParams);
             }
         }
     }
@@ -114,12 +112,12 @@ public class ViewManager {
         try {
             ImageView showImg = (ImageView) mView.findViewById(R.id.iv);
             showImg.setImageBitmap(bitmap);
-            mWindowManager.updateViewLayout(mView, params);
+            mWindowManager.updateViewLayout(mView, floatBallParams);
         } catch (Exception e) {
             Log.d(TAG, "setShowTxt: 更新悬浮框错误");
             e.printStackTrace();
             if (e.getMessage().contains("not attached to window manager")) {
-                mWindowManager.addView(mView, params);
+                mWindowManager.addView(mView, floatBallParams);
             }
         }
     }
@@ -162,11 +160,11 @@ public class ViewManager {
                         // 计算XY坐标偏移量
                         tranX = nowX - lastX;
                         tranY = nowY - lastY;
-                        params.x += tranX;
-                        params.y += tranY;
+                        floatBallParams.x += tranX;
+                        floatBallParams.y += tranY;
 
                         //更新悬浮窗位置
-                        mWindowManager.updateViewLayout(mView, params);
+                        mWindowManager.updateViewLayout(mView, floatBallParams);
                         //记录当前坐标作为下一次计算的上一次移动的位置坐标
                         lastX = nowX;
                         lastY = nowY;
