@@ -25,6 +25,7 @@ public class FuzhuService extends AccessibilityService {
     private String settings = "com.android.settings";
     private String contacts = "android.contacts";
     private String launcher = "android.app.launcher";
+    private String xiaomi_launcher = "miui.home";
 
 
     @Override
@@ -45,8 +46,8 @@ public class FuzhuService extends AccessibilityService {
         if (event.getPackageName() == null) return;
         String s = event.getPackageName().toString();
         if (s.contains("systemui")) return;
-        //Log.d(TAG, "getPackageName: " + s);
-        if (s.contains("launcher")) count = 0;
+        Log.d(TAG, "getPackageName: " + s);
+//        if (s.contains("launcher")) count = 0;
         /*
         免root自动安装.
          */
@@ -68,7 +69,7 @@ public class FuzhuService extends AccessibilityService {
             rootInActiveWindow = getRootInActiveWindow();
             if (rootInActiveWindow == null) return;
             Log.d(TAG, "count = " + count);
-            if (s.contains(contacts)){
+            if (s.contains(launcher) || s.contains(xiaomi_launcher)){
                 if(count ++ == 1){
                     new LauncherMove().run();
 //                checkListView();
@@ -118,16 +119,16 @@ public class FuzhuService extends AccessibilityService {
         public void run() {
             Log.d(TAG, "run: ");
             Path mPath = new Path();
-            mPath.moveTo(width /2 +500, height /2);
-            mPath.lineTo(width /2 -500, height /2);
+            mPath.moveTo(width /4 * 3, height /2);
+            mPath.lineTo(width /4 , height /2);
             GestureDescription.StrokeDescription sd2 ;
             try {
-                for (int i = 0; i < 2; i++) {
+                for (int i = 0; i < 5; i++) {
                     Log.d(TAG, "i = " + i);
-                    sd2 = new GestureDescription.StrokeDescription(mPath, 0, 200);
+                    sd2 = new GestureDescription.StrokeDescription(mPath, 0, 300);
                     moveGesture(sd2);
 //                    checkListView();
-                    SystemClock.sleep(300);
+                    SystemClock.sleep(500);
                 }
 //                Log.d(TAG, "end: ");
             } catch (Exception e) {

@@ -67,7 +67,7 @@ public class FloatService extends AccessibilityService {
                 if(count ++ == 1){
                     ViewManager.getInstance(FloatService.this).showFloatBall();
                 }
-                if (count == 20){
+                if (count == 3){
 //                    ViewManager.setShowTxt("7788990");
                     ViewManager.getInstance(FloatService.this).setShowTxt("778899");
                 }
